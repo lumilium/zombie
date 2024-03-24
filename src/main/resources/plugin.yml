@@ -1,0 +1,6 @@
+name: zombie
+version: '${project.version}'
+main: kr.kro.iseong.zombie.Zombie
+api-version: '1.20'
+commands:
+  zombie:
