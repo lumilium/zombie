@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="zombie">
+    <output-path>$PROJECT_DIR$/out/artifacts/zombie</output-path>
+    <root id="archive" name="zombie.jar">
+      <element id="module-output" name="zombie" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/plugin.yml" />
+    </root>
+  </artifact>
+</component>
