@@ -1,5 +1,8 @@
 package kr.kro.iseong.zombie;
 
+import kr.kro.iseong.zombie.listener.events;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -11,6 +14,7 @@ public final class Zombie extends JavaPlugin {
     @Override
     public void onEnable() {
         System.out.println("[zombie] plugin Enabled");
+        Bukkit.getPluginManager().registerEvents(new events(), this);
     }
 
     @Override
@@ -23,6 +27,9 @@ public final class Zombie extends JavaPlugin {
         Player p = (Player) sender;
         if (label.equalsIgnoreCase("zombie")) {
             p.sendMessage("test");
+        } else if (label.equalsIgnoreCase("spawn")) {
+            Location loc = p.getLocation();
+            p.setRespawnLocation(loc);
         }
         return true;
     }
