@@ -1,7 +1,12 @@
-name: zombie
+name: Zombie
 version: '${project.version}'
 main: kr.kro.iseong.zombie.Zombie
 api-version: '1.20'
+depend:
+  - LuckPerms
+softdepend:
+  - Vault
+  - VaultChatFormatter
 commands:
   zombie:
-  spawn:
+    description: 플러그인을 조작할 수 있습니다.
