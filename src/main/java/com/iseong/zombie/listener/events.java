@@ -1,10 +1,11 @@
-package kr.kro.iseong.zombie.listener;
+package com.iseong.zombie.listener;
 
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -12,6 +13,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.Set;
 
 public class events implements Listener {
 
@@ -62,6 +64,33 @@ public class events implements Listener {
                                 }
                             }
                         }
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onEntityDeath(EntityDeathEvent e) {
+        Entity entity = e.getEntity();
+        Set<String> tags = entity.getScoreboardTags();
+        Location loc = entity.getLocation();
+        if (!tags.isEmpty()) {
+            if (entity.getType() == EntityType.ZOMBIE) {
+                if (tags.contains("boom")) {
+                    Entity tnt = e.getEntity().getWorld().spawnEntity(loc, EntityType.PRIMED_TNT);
+                    TNTPrimed primed = (TNTPrimed) tnt;
+                    primed.setFuseTicks(0);
+                } else if (tags.contains("split")) {
+                    for (int i = 0; i < 4; i++) {
+                        Entity split1 = e.getEntity().getWorld().spawnEntity(loc, EntityType.ZOMBIE);
+                        split1.addScoreboardTag("sec");
+                        Objects.requireNonNull(((LivingEntity) split1).getEquipment()).setHelmet(new ItemStack(Material.STONE_BUTTON));
+                    }
+                } else if (tags.contains("sec")) {
+                    for (int i = 0; i < 4; i++) {
+                        Entity split1 = e.getEntity().getWorld().spawnEntity(loc, EntityType.ZOMBIE);
+                        Objects.requireNonNull(((LivingEntity) split1).getEquipment()).setHelmet(new ItemStack(Material.STONE_BUTTON));
                     }
                 }
             }
