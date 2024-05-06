@@ -28,6 +28,9 @@ public class tabComplete implements TabCompleter {
             arguments.add("speed");
             arguments.add("boom");
             arguments.add("split");
+            arguments.add("slow");
+            arguments.add("vaccine");
+            arguments.add("invisible");
         }
         return arguments;
     }
