@@ -1,6 +1,5 @@
 # 디폴트 무시된 파일
 /shelf/
-/.idea/
-/.idea/artifacts/
+/.idea/*
 out
 target
