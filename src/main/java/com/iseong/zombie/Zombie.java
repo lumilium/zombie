@@ -14,6 +14,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -34,6 +35,40 @@ public final class Zombie extends JavaPlugin {
         if (provider != null) {
             provider.getProvider();
         }
+
+        ItemStack netheriteScrap = new ItemStack(Material.NETHERITE_SCRAP);
+        ItemStack bottle = new ItemStack(Material.POTION, 1);
+        ItemMeta meta = bottle.getItemMeta();
+        PotionMeta potionMeta = (PotionMeta) meta;
+        potionMeta.setColor(Color.fromRGB(68, 147, 5));
+        meta.setDisplayName("vaccine");
+        bottle.setItemMeta(meta);
+        ShapedRecipe vaccine = new ShapedRecipe(bottle);
+        ShapedRecipe syringe = new ShapedRecipe(netheriteScrap);
+        syringe.shape(
+                "GPG",
+                "G G",
+                "GIG"
+        );
+
+        vaccine.shape(
+                " Z ",
+                "KTG",
+                " N "
+        );
+
+        syringe.setIngredient('G', Material.GLASS);
+        syringe.setIngredient('P', Material.PISTON);
+        syringe.setIngredient('I', Material.IRON_BLOCK);
+
+        vaccine.setIngredient('Z', Material.ZOMBIE_HEAD);
+        vaccine.setIngredient('K', Material.ROTTEN_FLESH);
+        vaccine.setIngredient('T', Material.TOTEM_OF_UNDYING);
+        vaccine.setIngredient('G', Material.GOLDEN_APPLE);
+        vaccine.setIngredient('N', Material.NETHERITE_SCRAP);
+
+        getServer().addRecipe(vaccine);
+        getServer().addRecipe(syringe);
     }
 
     @Override
