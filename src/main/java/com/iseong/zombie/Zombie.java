@@ -38,11 +38,15 @@ public final class Zombie extends JavaPlugin {
 
         ItemStack netheriteScrap = new ItemStack(Material.NETHERITE_SCRAP);
         ItemStack bottle = new ItemStack(Material.POTION, 1);
-        ItemMeta meta = bottle.getItemMeta();
-        PotionMeta potionMeta = (PotionMeta) meta;
+        ItemMeta vaccineMeta = bottle.getItemMeta();
+        PotionMeta potionMeta = (PotionMeta) vaccineMeta;
         potionMeta.setColor(Color.fromRGB(68, 147, 5));
-        meta.setDisplayName("vaccine");
-        bottle.setItemMeta(meta);
+        vaccineMeta.setDisplayName("vaccine");
+        vaccineMeta.setCustomModelData(1);
+        bottle.setItemMeta(vaccineMeta);
+        ItemMeta syringeMeta = netheriteScrap.getItemMeta();
+        syringeMeta.setDisplayName("syringe");
+        netheriteScrap.setItemMeta(syringeMeta);
         ShapedRecipe vaccine = new ShapedRecipe(bottle);
         ShapedRecipe syringe = new ShapedRecipe(netheriteScrap);
         syringe.shape(
@@ -51,10 +55,16 @@ public final class Zombie extends JavaPlugin {
                 "GIG"
         );
 
+//        vaccine.shape(
+//                " Z ",
+//                "KTG",
+//                " N "
+//        );
+
         vaccine.shape(
                 " Z ",
-                "KTG",
-                " N "
+                "KNG",
+                " B "
         );
 
         syringe.setIngredient('G', Material.GLASS);
@@ -63,9 +73,10 @@ public final class Zombie extends JavaPlugin {
 
         vaccine.setIngredient('Z', Material.ZOMBIE_HEAD);
         vaccine.setIngredient('K', Material.ROTTEN_FLESH);
-        vaccine.setIngredient('T', Material.TOTEM_OF_UNDYING);
+//        vaccine.setIngredient('T', Material.TOTEM_OF_UNDYING);
         vaccine.setIngredient('G', Material.GOLDEN_APPLE);
         vaccine.setIngredient('N', Material.NETHERITE_SCRAP);
+        vaccine.setIngredient('B', Material.GLASS_BOTTLE);
 
         getServer().addRecipe(vaccine);
         getServer().addRecipe(syringe);
@@ -133,6 +144,7 @@ public final class Zombie extends JavaPlugin {
                     PotionMeta potionMeta = (PotionMeta) meta;
                     potionMeta.setColor(Color.fromRGB(68, 147, 5));
                     meta.setDisplayName("vaccine");
+                    meta.setCustomModelData(1);
                     vaccine.setItemMeta(meta);
                     p.getInventory().addItem(vaccine);
                 } else if (args[0].equalsIgnoreCase("invisible")) {
@@ -141,6 +153,14 @@ public final class Zombie extends JavaPlugin {
                     LivingEntity livingEntity = (LivingEntity) entity;
                     livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
                     Objects.requireNonNull(((LivingEntity) entity).getEquipment()).setHelmet(new ItemStack(Material.STONE_BUTTON));
+                } else if (args[0].equalsIgnoreCase("materials")) {
+                    p.getInventory().addItem(new ItemStack(Material.GLASS, 6));
+                    p.getInventory().addItem(new ItemStack(Material.PISTON));
+                    p.getInventory().addItem(new ItemStack(Material.IRON_BLOCK));
+                    p.getInventory().addItem(new ItemStack(Material.GOLDEN_APPLE));
+                    p.getInventory().addItem(new ItemStack(Material.ROTTEN_FLESH));
+                    p.getInventory().addItem(new ItemStack(Material.ZOMBIE_HEAD));
+                    p.getInventory().addItem(new ItemStack(Material.GLASS_BOTTLE));
                 }
             } else {
                 p.sendMessage(ChatColor.DARK_RED + "Usages: /zombie help");
