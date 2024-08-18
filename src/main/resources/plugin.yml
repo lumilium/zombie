@@ -1,6 +1,6 @@
-name: Zombie
+name: zombie
 version: '${project.version}'
-main: com.iseong.zombie.Zombie
+main: com.iseong.zombie.zombie
 api-version: '1.20'
 author: 'inseong2010'
 depend:
@@ -11,3 +11,5 @@ softdepend:
 commands:
   zombie:
     aliases: [z]
+config:
+  dataManager

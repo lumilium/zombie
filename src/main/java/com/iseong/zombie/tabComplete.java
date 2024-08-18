@@ -31,7 +31,8 @@ public class tabComplete implements TabCompleter {
             arguments.add("slow");
             arguments.add("vaccine");
             arguments.add("invisible");
-            arguments.add("Materials");
+            arguments.add("materials");
+            arguments.add("summon");
         }
         return arguments;
     }
