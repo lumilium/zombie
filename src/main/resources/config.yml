@@ -1,0 +1,12 @@
+development: true
+randomSummon: true
+#Please write the world border size in odd numbers.
+worldBorderSize: 45
+types:
+  speed: true
+  boom: true
+  split: true
+  slow: true
+  invisible: true
+#1 = 20 spawns per second
+summoningSpeed: 10

@@ -1,15 +1,16 @@
-name: zombie
+name: Zombie
 version: '${project.version}'
 main: com.iseong.zombie.zombie
 api-version: '1.20'
 author: 'inseong2010'
 depend:
   - LuckPerms
+  - BanManager
 softdepend:
   - Vault
   - VaultChatFormatter
 commands:
   zombie:
-    aliases: [z]
+    description: Zombie plugin startup command
 config:
   dataManager

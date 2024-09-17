@@ -11,7 +11,7 @@ import java.io.InputStreamReader;
 import java.util.logging.Level;
 
 public class dataManager {
-    private zombie plugin;
+    private final zombie plugin;
     private FileConfiguration dataConfig = null;
     private File configFile = null;
 
