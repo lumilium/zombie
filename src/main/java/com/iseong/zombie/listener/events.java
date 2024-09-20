@@ -140,8 +140,6 @@ public class events implements Listener {
             String command = "tempban " + e.getWhoClicked().getName() + " 1800 " + reason;
             e.setCancelled(true);
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
-        } else if (type == Material.STICK) {
-            e.setCancelled(true);
         }
     }
 }

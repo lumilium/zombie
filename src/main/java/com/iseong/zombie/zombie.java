@@ -1,6 +1,7 @@
 package com.iseong.zombie;
 
 import com.iseong.zombie.data.dataManager;
+import com.iseong.zombie.data.teamManager;
 import com.iseong.zombie.listener.events;
 import com.iseong.zombie.util.itemUtil;
 import net.luckperms.api.LuckPerms;
@@ -23,17 +24,21 @@ import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.bukkit.entity.Zombie;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
 
 public final class zombie extends JavaPlugin {
 
     private dataManager data;
+    private teamManager team;
     private final Random random = new Random();
 
     @Override
     public void onEnable() {
         this.data = new dataManager(this);
+        this.team = new teamManager(this);
         FileConfiguration configData = this.data.getDataConfig();
 
         if (configData != null) {
@@ -42,8 +47,8 @@ public final class zombie extends JavaPlugin {
         }
 
         Bukkit.getPluginManager().registerEvents(new events(), this);
-        Objects.requireNonNull(Bukkit.getPluginCommand("zombie")).setTabCompleter(new tabComplete());
-
+        Objects.requireNonNull(Bukkit.getPluginCommand("zombie")).setTabCompleter(new com.iseong.zombie.tabComplete.zombie());
+        Objects.requireNonNull(Bukkit.getPluginCommand("team")).setTabCompleter(new com.iseong.zombie.tabComplete.team());
         RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
         if (provider != null) {
             provider.getProvider();
@@ -58,6 +63,8 @@ public final class zombie extends JavaPlugin {
     @Override
     public void onDisable() {}
 
+
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player p = (Player) sender;
@@ -68,7 +75,6 @@ public final class zombie extends JavaPlugin {
                 World world = Bukkit.getWorld("world");
                 if (args[0].equalsIgnoreCase("start")) {
                     if (!user.getPrimaryGroup().equals("admin")) p.sendMessage("당신은 관리자가 아닙니다.");
-
                 } else if (args[0].equalsIgnoreCase("disable")) {
                     if (!user.getPrimaryGroup().equals("admin")) p.sendMessage("당신은 관리자가 아닙니다.");
                     Bukkit.getPluginManager().disablePlugin(this);
@@ -159,6 +165,39 @@ public final class zombie extends JavaPlugin {
             } else {
                 p.sendMessage(ChatColor.DARK_RED + "Usages: /zombie help");
             }
+        } else if (label.equalsIgnoreCase("team")) {
+            FileConfiguration teamData = this.team.getDataConfig();
+            if (args.length == 1) {
+
+            } else if (args.length == 2) {
+                if (args[0].equalsIgnoreCase("invite")) {
+                    String playerName = args[1];
+                    Player player = Bukkit.getPlayer(playerName);
+                    p.sendMessage("");
+                    player.sendMessage("");
+                } else if (args[0].equalsIgnoreCase("create")) {
+                    String teamName = args[1];
+                    //"players." + p.getName().toString() + ".total", amount + 1
+                    if (teamData.contains("teams." + teamName))  {
+                        p.sendMessage("이미 존재 하는  팀 이름 입니다.");
+                    } else {
+                        String[] members = {p.getName()};
+                        teamData.set("teams." + teamName + ".members", members);
+                        this.team.saveConfig();
+                        p.sendMessage("팀이 성공적으로 생성 되었습니다.");
+                    }
+
+                } else if (args[0].equalsIgnoreCase("remove")) {
+                    String teamName = args[1];
+                    if (!teamData.contains("teams." + teamName)) {
+                        p.sendMessage("존재 하지 않는 팀 입니다.");
+                    } else {
+                        teamData.set("teams." + teamName, null);
+                        this.team.saveConfig();
+                        p.sendMessage("팀이 성공적으로 제거되었습니다.");
+                    }
+                }
+            }
         }
         return true;
     }
@@ -211,7 +250,6 @@ public final class zombie extends JavaPlugin {
             customZombie.addScoreboardTag("slow");
         } else if (configData.getBoolean("types.invisible")) {
             Zombie customZombie = (Zombie) world.spawnEntity(randomLocation, EntityType.ZOMBIE);
-
             customZombie.setCustomName("invisible");
             customZombie.setAdult();
             customZombie.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));

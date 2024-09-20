@@ -12,5 +12,8 @@ softdepend:
 commands:
   zombie:
     description: Zombie plugin startup command
+  team:
+    description: Zombie plugin team command
 config:
   dataManager
+  teamManager
