@@ -1,6 +1,7 @@
 package com.iseong.zombie;
 
 import com.iseong.zombie.data.dataManager;
+import com.iseong.zombie.data.keepInvManager;
 import com.iseong.zombie.data.teamManager;
 import com.iseong.zombie.listener.events;
 import com.iseong.zombie.util.itemUtil;
@@ -24,21 +25,21 @@ import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.bukkit.entity.Zombie;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 
 public final class zombie extends JavaPlugin {
 
     private dataManager data;
     private teamManager team;
+    public static keepInvManager keepInvManager;
     private final Random random = new Random();
+    private HashMap<UUID, ItemStack[]> inven = new HashMap<>();
 
     @Override
     public void onEnable() {
         this.data = new dataManager(this);
         this.team = new teamManager(this);
+        keepInvManager = new keepInvManager(this);
         FileConfiguration configData = this.data.getDataConfig();
 
         if (configData != null) {
@@ -63,8 +64,6 @@ public final class zombie extends JavaPlugin {
     @Override
     public void onDisable() {}
 
-
-
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player p = (Player) sender;
@@ -74,34 +73,34 @@ public final class zombie extends JavaPlugin {
                 Location loc = p.getLocation();
                 World world = Bukkit.getWorld("world");
                 if (args[0].equalsIgnoreCase("start")) {
-                    if (!user.getPrimaryGroup().equals("admin")) p.sendMessage("당신은 관리자가 아닙니다.");
+                    if (!user.getPrimaryGroup().equals("admin")) p.sendMessage("귀하는 관리자가 아닙니다.");
                 } else if (args[0].equalsIgnoreCase("disable")) {
-                    if (!user.getPrimaryGroup().equals("admin")) p.sendMessage("당신은 관리자가 아닙니다.");
+                    if (!user.getPrimaryGroup().equals("admin")) p.sendMessage("귀하는 관리자가 아닙니다.");
                     Bukkit.getPluginManager().disablePlugin(this);
                     return false;
                 } else if (args[0].equalsIgnoreCase("speed")) {
-                    if (!user.getPrimaryGroup().equals("admin")) p.sendMessage("당신은 관리자가 아닙니다.");
+                    if (!user.getPrimaryGroup().equals("admin")) p.sendMessage("귀하는 관리자가 아닙니다.");
                     Zombie customZombie = (Zombie) world.spawnEntity(loc, EntityType.ZOMBIE);
                     customZombie.setAdult();
                     ItemStack helmet = new ItemStack(Material.STONE_BUTTON);
                     Objects.requireNonNull(((LivingEntity) customZombie).getEquipment()).setHelmet(helmet);
                     customZombie.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 6));
                 } else if (args[0].equalsIgnoreCase("boom")) {
-                    if (!user.getPrimaryGroup().equals("admin")) p.sendMessage("당신은 관리자가 아닙니다.");
+                    if (!user.getPrimaryGroup().equals("admin")) p.sendMessage("귀하는 관리자가 아닙니다.");
                     Zombie customZombie = (Zombie) world.spawnEntity(loc, EntityType.ZOMBIE);
                     customZombie.setAdult();
                     ItemStack helmet = new ItemStack(Material.STONE_BUTTON);
                     Objects.requireNonNull(((LivingEntity) customZombie).getEquipment()).setHelmet(helmet);
                     customZombie.addScoreboardTag("boom");
                 } else if (args[0].equalsIgnoreCase("split")) {
-                    if (!user.getPrimaryGroup().equals("admin")) p.sendMessage("당신은 관리자가 아닙니다.");
+                    if (!user.getPrimaryGroup().equals("admin")) p.sendMessage("귀하는 관리자가 아닙니다.");
                     Zombie customZombie = (Zombie) world.spawnEntity(loc, EntityType.ZOMBIE);
                     customZombie.setAdult();
                     ItemStack helmet = new ItemStack(Material.STONE_BUTTON);
                     Objects.requireNonNull(((LivingEntity) customZombie).getEquipment()).setHelmet(helmet);
                     customZombie.addScoreboardTag("split");
                 } else if (args[0].equalsIgnoreCase("slow")) {
-                    if (!user.getPrimaryGroup().equals("admin")) p.sendMessage("당신은 관리자가 아닙니다.");
+                    if (!user.getPrimaryGroup().equals("admin")) p.sendMessage("귀하는 관리자가 아닙니다.");
                     Zombie customZombie = (Zombie) world.spawnEntity(loc, EntityType.ZOMBIE);
                     customZombie.setAdult();
                     ItemStack helmet = new ItemStack(Material.STONE_BUTTON);
@@ -114,7 +113,7 @@ public final class zombie extends JavaPlugin {
                     customZombie.setHealth(100);
                     customZombie.addScoreboardTag("slow");
                 } else if (args[0].equalsIgnoreCase("vaccine")) {
-                    if (!user.getPrimaryGroup().equals("admin")) p.sendMessage("당신은 관리자가 아닙니다.");
+                    if (!user.getPrimaryGroup().equals("admin")) p.sendMessage("귀하는 관리자가 아닙니다.");
                     ItemStack vaccine = new ItemStack(Material.POTION);
                     ItemMeta meta = vaccine.getItemMeta();
                     PotionMeta potionMeta = (PotionMeta) meta;
@@ -124,14 +123,14 @@ public final class zombie extends JavaPlugin {
                     vaccine.setItemMeta(meta);
                     p.getInventory().addItem(vaccine);
                 } else if (args[0].equalsIgnoreCase("invisible")) {
-                    if (!user.getPrimaryGroup().equals("admin")) p.sendMessage("당신은 관리자가 아닙니다.");
+                    if (!user.getPrimaryGroup().equals("admin")) p.sendMessage("귀하는 관리자가 아닙니다.");
                     Zombie customZombie = (Zombie) world.spawnEntity(loc, EntityType.ZOMBIE);
                     customZombie.setAdult();
                     customZombie.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
                     ItemStack helmet = new ItemStack(Material.STONE_BUTTON);
                     Objects.requireNonNull(((LivingEntity) customZombie).getEquipment()).setHelmet(helmet);
                 } else if (args[0].equalsIgnoreCase("materials")) {
-                    if (!user.getPrimaryGroup().equals("admin")) p.sendMessage("당신은 관리자가 아닙니다.");
+                    if (!user.getPrimaryGroup().equals("admin")) p.sendMessage("귀하는 관리자가 아닙니다.");
                     p.getInventory().addItem(new ItemStack(Material.GLASS, 6));
                     p.getInventory().addItem(new ItemStack(Material.PISTON));
                     p.getInventory().addItem(new ItemStack(Material.IRON_BLOCK));
@@ -168,6 +167,9 @@ public final class zombie extends JavaPlugin {
         } else if (label.equalsIgnoreCase("team")) {
             FileConfiguration teamData = this.team.getDataConfig();
             if (args.length == 1) {
+                if (args[0].equalsIgnoreCase("CreateBase")) {
+
+                }
 
             } else if (args.length == 2) {
                 if (args[0].equalsIgnoreCase("invite")) {
@@ -186,7 +188,6 @@ public final class zombie extends JavaPlugin {
                         this.team.saveConfig();
                         p.sendMessage("팀이 성공적으로 생성 되었습니다.");
                     }
-
                 } else if (args[0].equalsIgnoreCase("remove")) {
                     String teamName = args[1];
                     if (!teamData.contains("teams." + teamName)) {
@@ -198,6 +199,21 @@ public final class zombie extends JavaPlugin {
                     }
                 }
             }
+        } else if (label.equalsIgnoreCase("inv")) {
+            ItemStack[] getStorage = p.getInventory().getStorageContents();
+            inven.put(p.getUniqueId(), getStorage);
+        } else if (label.equalsIgnoreCase("invdata")) {
+            ItemStack[] data = inven.get(p.getUniqueId());
+            p.sendMessage(Arrays.toString(data));
+        } else if (label.equalsIgnoreCase("getinv")) {
+            ItemStack[] storage = inven.get(p.getUniqueId());
+            p.getInventory().setStorageContents(storage);
+        } else if (label.equalsIgnoreCase("getkeepinv")) {
+//            events events = new events();
+//            ItemStack[] data = events.keepInv.get(p.getUniqueId());
+//            p.sendMessage(Arrays.toString(data));
+            Object data = keepInvManager.getDataConfig().get("Users." + p.getUniqueId() + ".Items");
+            p.sendMessage(Objects.requireNonNull(data).toString());
         }
         return true;
     }

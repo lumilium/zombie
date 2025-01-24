@@ -14,6 +14,11 @@ commands:
     description: Zombie plugin startup command
   team:
     description: Zombie plugin team command
+  inv:
+  invdata:
+  getinv:
+  getkeepinv:
 config:
   dataManager
   teamManager
+  keepInvManager

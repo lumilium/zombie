@@ -1,7 +1,11 @@
 package com.iseong.zombie.listener;
 
+import com.iseong.zombie.data.keepInvManager;
 import com.iseong.zombie.util.itemUtil;
+import com.iseong.zombie.zombie;
+import io.papermc.paper.event.player.PlayerInventorySlotChangeEvent;
 import org.bukkit.*;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,16 +15,19 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class events implements Listener {
+
+    private HashMap<UUID, Arrays[]> address = new HashMap<>();
+    public HashMap<UUID, ItemStack[]> keepInv = new HashMap<>();
 
     @EventHandler
     public void onDeath(PlayerDeathEvent e) {
@@ -28,14 +35,13 @@ public class events implements Listener {
         Player p = e.getPlayer();
         Set<String> tag = p.getScoreboardTags();
         Location loc = p.getLocation();
+        e.isCancelled();
         if (tag.contains("protect")) {
-            e.isCancelled();
             p.playEffect(EntityEffect.TOTEM_RESURRECT);
             p.setRespawnLocation(loc, true);
             p.removeScoreboardTag("protect");
             return;
         }
-        e.isCancelled();
         p.setRespawnLocation(loc, true);
         Zombie zombie = (Zombie) world.spawnEntity(loc, EntityType.ZOMBIE);
         zombie.setAdult();
@@ -52,10 +58,30 @@ public class events implements Listener {
     }
 
     @EventHandler
+    public void onRespawn(PlayerRespawnEvent e) {
+        Player p = e.getPlayer();
+        PlayerInventory inv = p.getInventory();
+//        ItemStack[] data = keepInv.get(e.getPlayer().getUniqueId());
+        ItemStack[] data = (ItemStack[]) zombie.keepInvManager.getDataConfig().get("Users." + p.getUniqueId() + ".Items");
+        Bukkit.broadcastMessage(Arrays.toString(Objects.requireNonNull(data)));
+        inv.setStorageContents(data);
+//        keepInv.remove(e.getPlayer().getUniqueId());
+    }
+
+    @EventHandler
+    public void onInvUpdate(PlayerInventorySlotChangeEvent e) {
+        Player p = e.getPlayer();
+        Set<String> tag = p.getScoreboardTags();
+        PlayerInventory inv = p.getInventory();
+        if (tag.contains("protect")) {
+//            keepInv.put(p.getUniqueId(), inv.getStorageContents());
+        }
+    }
+
+    @EventHandler
     public void onRightClick(PlayerInteractEvent e) {
         Player p = e.getPlayer();
         Action a = e.getAction();
-
         if (a == Action.RIGHT_CLICK_AIR || a == Action.RIGHT_CLICK_BLOCK) {
             @NotNull Material item = p.getInventory().getItemInMainHand().getType();
             if (item == Material.POTION) {
@@ -124,6 +150,11 @@ public class events implements Listener {
                 String meta = Objects.requireNonNull(e.getItem().getItemMeta().displayName()).toString();
                 if (Objects.requireNonNull(meta).contains("vaccine")) {
                     p.addScoreboardTag("protect");
+                    ItemStack[] nowStorageStatus = p.getInventory().getStorageContents();
+                    keepInv.put(p.getUniqueId(), nowStorageStatus);
+                    FileConfiguration keepInvData = zombie.keepInvManager.getDataConfig();
+                    keepInvData.set("Users." + p.getUniqueId() + ".Items", nowStorageStatus);
+                    zombie.keepInvManager.saveConfig();
                 } else {
                     p.sendMessage("관리자에게 문의하십시오.");
                 }
