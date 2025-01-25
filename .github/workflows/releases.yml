@@ -35,7 +35,9 @@ jobs:
         with:
           maven-version: '3.8.4'
       - name: test
-        run: ls
+        run: |
+          ls -al
+          cat pom.xml
 #        run: |
 #          echo ${project.version}
 #      - name: Upload artifact
