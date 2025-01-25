@@ -23,7 +23,7 @@ jobs:
 #              --repo="$GITHUB_REPOSITORY" \
 #              --title="${tag#v}" \
 #              --generate-notes
-      - name: test
+      - name: checkout
         uses: actions/checkout@v4.2.2
       - name: Set up JDK 17
         uses: actions/setup-java@v2
@@ -41,7 +41,7 @@ jobs:
 #          echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
 
       - name: ls
-        run: ls -al
+        run: ls -al ./target
 #      - name: print version
 #        run: |
 #          echo $RELEASE_VERSION
