@@ -34,12 +34,17 @@ jobs:
         uses: stCarolas/setup-maven@v5
         with:
           maven-version: '3.8.4'
-      - name: test
-        env:
-          version: ${{ project.version }}
+#      - name: Build with Maven
+#        run: mvn package
+      - name: Set Release version env variable
         run: |
-          ls -al
-          echo ${version}
+          echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+#      - name: test
+#        env:
+#          version: ${{ project.version }}
+#        run: |
+#          ls -al
+#          echo ${version}
 #        run: |
 #          echo ${project.version}
 #      - name: Upload artifact
