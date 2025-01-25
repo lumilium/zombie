@@ -17,8 +17,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ github.ref_name }}
+#          version: ${project.version}
         run: |
-          gh release create "$tag" \
+          gh release create "$tag" "" \
               --repo="$GITHUB_REPOSITORY" \
               --title="${tag#v}" \
               --generate-notes
+      - name: test
+        run: echo ${project.version}
+#      - name: Upload artifact
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          tag: ${{ github.ref_name }}
+#        run: |
+#          gh release upload "$tag" "build/libs/Zombie.jar" \
+#              --repo="$GITHUB_REPOSITORY"
