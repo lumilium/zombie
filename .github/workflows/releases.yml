@@ -38,6 +38,7 @@ jobs:
         run: |
           ls -al
           cat pom.xml
+          echo ${project.version}
 #        run: |
 #          echo ${project.version}
 #      - name: Upload artifact
