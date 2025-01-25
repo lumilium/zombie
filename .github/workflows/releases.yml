@@ -17,7 +17,7 @@ jobs:
 #        env:
 #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #          tag: ${{ github.ref_name }}
-##          version: ${project.version}
+#          version: ${project.version}
 #        run: |
 #          gh release create "$tag" \
 #              --repo="$GITHUB_REPOSITORY" \
@@ -35,10 +35,12 @@ jobs:
         with:
           maven-version: '3.8.4'
       - name: test
+        env:
+          version: ${project.version}
         run: |
           ls -al
           cat pom.xml
-          echo ${project.version}
+          echo ${version}
 #        run: |
 #          echo ${project.version}
 #      - name: Upload artifact
