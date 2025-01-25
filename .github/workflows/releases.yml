@@ -36,10 +36,9 @@ jobs:
           maven-version: '3.8.4'
       - name: test
         env:
-          version: ${project.version}
+          version: ${{ project.version }}
         run: |
           ls -al
-          cat pom.xml
           echo ${version}
 #        run: |
 #          echo ${project.version}
