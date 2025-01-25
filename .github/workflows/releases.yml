@@ -13,18 +13,31 @@ jobs:
     name: Release pushed tag
     runs-on: ubuntu-22.04
     steps:
-      - name: Create release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ github.ref_name }}
-#          version: ${project.version}
-        run: |
-          gh release create "$tag" \
-              --repo="$GITHUB_REPOSITORY" \
-              --title="${tag#v}" \
-              --generate-notes
+#      - name: Create release
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          tag: ${{ github.ref_name }}
+##          version: ${project.version}
+#        run: |
+#          gh release create "$tag" \
+#              --repo="$GITHUB_REPOSITORY" \
+#              --title="${tag#v}" \
+#              --generate-notes
+      - name: test
+        uses: actions/checkout@v4.2.2
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '17'
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: '3.8.4'
       - name: test
         run: echo ${project.version}
+#        run: |
+#          echo ${project.version}
 #      - name: Upload artifact
 #        env:
 #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
