@@ -1,6 +1,5 @@
 package com.iseong.zombie.listener;
 
-import com.iseong.zombie.data.keepInvManager;
 import com.iseong.zombie.util.itemUtil;
 import com.iseong.zombie.zombie;
 import io.papermc.paper.event.player.PlayerInventorySlotChangeEvent;
@@ -166,11 +165,12 @@ public class events implements Listener {
     public void onCraftItem(CraftItemEvent e) {
         Material type = e.getRecipe().getResult().getType();
         if (type == Material.MUSIC_DISC_FAR) {
-            Bukkit.getPluginManager().getPlugin("BanManger");
-            String reason = "123";
-            String command = "tempban " + e.getWhoClicked().getName() + " 1800 " + reason;
+//            Bukkit.getPluginManager().getPlugin("BanManger");
+//            String reason = "123";
+//            String command = "tempban " + e.getWhoClicked().getName() + " 1800 " + reason;
             e.setCancelled(true);
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+            e.getWhoClicked().sendMessage("A syringe once used cannot be reused.");
+//            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
         }
     }
 }
